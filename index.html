@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<canvas id="fx" aria-hidden="true"></canvas>
+<div class="marquee" aria-hidden="true"><div>VĚŘÍM ✦ CESTUJI ✦ PROGRAMUJI ✦ VĚŘÍM ✦ CESTUJI ✦ PROGRAMUJI ✦ VĚŘÍM ✦ CESTUJI ✦ PROGRAMUJI ✦ VĚŘÍM ✦ CESTUJI ✦ PROGRAMUJI ✦&nbsp;</div></div>
 <header class="nav">
   <a class="brand" href="#o-mne">JH</a>
   <nav id="menu">
@@ -25,7 +27,7 @@
 <main id="top">
   <section class="hero">
     <p class="eyebrow">Jiří Hronek</p>
-    <h1>Věřím. <span>Cestuji.</span> Programuji.</h1>
+    <h1 data-text="Věřím. Cestuji. Programuji.">Věřím. <span>Cestuji.</span> Programuji.</h1>
     <p class="lead">Deníky z cest a veřejné projekty na jednom místě, aneb vše, co mohu nabídnout, na jednom místě…</p>
     <div class="cta" id="cta">
       <a class="btn" href="#o-mne">O mně</a>
@@ -63,6 +65,9 @@
       <a class="repo" href="https://www.farnost-pisek.cz/" target="_blank" rel="noopener"><b>Farnost Písek</b><p>Web římskokatolické farnosti Písek.</p></a>
       <a class="repo" href="https://www.facebook.com/farnostpisekcz/" target="_blank" rel="noopener"><b>Farnost Písek na Facebooku</b><p>Novinky a život farnosti.</p></a>
       <a class="repo" href="https://neocatechumenaleiter-org.translate.goog/en/?_x_tr_sl=en&amp;_x_tr_tl=cs&amp;_x_tr_hl=cs" target="_blank" rel="noopener"><b>Neokatechumenátní cesta</b><p>Oficiální stránky Cesty (v automatickém českém překladu).</p></a>
+      <a class="repo" href="https://www.thechosen.tv/" target="_blank" rel="noopener"><b>The Chosen</b><p>Seriál o lidech, kteří se osobně setkali s Ježíšem.</p></a>
+      <a class="repo" href="https://www.lomec.cz/" target="_blank" rel="noopener"><b>Lomec</b><p>Poutní místo Lomec.</p></a>
+      <a class="repo" href="https://pisek.kdu.cz/" target="_blank" rel="noopener"><b>KDU-ČSL Písek</b><p>Stránky píseckých lidovců.</p></a>
     </div>
   </section>
 </main>
@@ -72,6 +77,9 @@
   <button data-d="aurora">1 Aurora</button>
   <button data-d="editorial">2 Editorial</button>
   <button data-d="terminal">3 Terminál</button>
+  <button data-d="matrix">4 Matrix</button>
+  <button data-d="neural">5 Neural AI</button>
+  <button data-d="kinetic">6 Kinetic</button>
 </div>
 
 <footer>© <span id="year"></span> Jiří Hronek</footer>
