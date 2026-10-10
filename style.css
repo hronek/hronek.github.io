@@ -125,5 +125,6 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
 .thumb.top img{object-position:50% 20%}
 .thumb.logo{background:#fff}
 .thumb.logo img{object-fit:contain;padding:12px}
-.thumb.wide img{padding:18% 22%}
 .repo:hover .thumb img{transform:scale(1.05)}
+.thumb.kdu{background:#fecb00}
+.thumb.kdu img{object-fit:contain}
