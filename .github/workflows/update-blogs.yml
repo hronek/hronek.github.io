@@ -1,0 +1,35 @@
+name: Update blog list
+
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scrape Blogger profile
+        run: |
+          ID=12479569623414008742
+          curl -fsSL "https://www.blogger.com/profile/$ID" \
+            | grep -oE 'https?://[a-zA-Z0-9-]+\.blogspot\.com' | sed 's#^http:#https:#' | sort -u > candidates.txt
+          : > own.txt
+          while read -r u; do
+            # jen blogy, jejichž autorem je tento profil (ne sledované blogy)
+            if curl -fsSL "$u/feeds/posts/default?alt=json&max-results=1" | grep -q "$ID"; then echo "$u" >> own.txt; fi
+          done < candidates.txt
+          if [ -s own.txt ]; then
+            { echo '['; sed 's/.*/  "&"/' own.txt | paste -sd, - | sed 's/,/,\n/g'; echo ']'; } > blogs.json
+          fi
+          rm -f candidates.txt own.txt
+      - name: Commit if changed
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add blogs.json
+          git diff --cached --quiet || (git commit -m "Update blog list" && git push)
