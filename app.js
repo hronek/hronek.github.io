@@ -108,25 +108,57 @@ $('#posts').addEventListener('click', (e) => {
   document.querySelectorAll('#posts details.post').forEach((d) => { d.open = t.dataset.all === '1'; });
 });
 
+// ---------- Dynamické podmenu (blogy u Cestování, projekty u Programování) ----------
+// null = sekce podmenu nemá, [] = položky se ještě načítají
+const submenu = { cestovani: [], programovani: [] };
+let blogs = [], currentBlog = 0;
+
+function renderSubmenu(id) {
+  const box = $('#submenu'), items = submenu[id];
+  box.hidden = !items;
+  if (!items) return;
+  box.dataset.view = id;
+  box.innerHTML = items.length
+    ? items.map((it, i) => {
+      const count = it.count != null ? ` <small>${it.count}</small>` : '';
+      return `<button class="chip${it.active ? ' on' : ''}" data-i="${i}">${esc(it.label)}${count}</button>`;
+    }).join('')
+    : '<span class="muted">Načítám…</span>';
+}
+
+$('#submenu').addEventListener('click', (e) => {
+  const t = e.target.closest('.chip'); if (!t) return;
+  const id = $('#submenu').dataset.view, i = +t.dataset.i;
+  if (id === 'cestovani') {
+    selectBlog(i);
+    $('#cestovani').scrollIntoView({ behavior: 'smooth' });
+  } else if (id === 'programovani') {
+    const card = document.querySelectorAll('#repos .repo')[i];
+    card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    card.classList.remove('flash'); void card.offsetWidth; card.classList.add('flash');
+  }
+});
+
+function selectBlog(i) {
+  currentBlog = i;
+  showBlog(blogs[i]);
+  submenu.cestovani = blogs.map((b, j) => ({ label: b.title, count: b.posts.length, active: j === i }));
+  route();
+}
+
 async function initBlogs() {
   const urls = await loadBlogList();
-  const blogs = (await Promise.all(urls.map((u) => loadFeed(u.replace(/\/$/, '')).catch(() => null)))).filter(Boolean);
+  blogs = (await Promise.all(urls.map((u) => loadFeed(u.replace(/\/$/, '')).catch(() => null)))).filter(Boolean);
   // nejnovější blog (podle data posledního příspěvku) první a výchozí
   const last = (b) => (b.posts.length ? b.posts[b.posts.length - 1].date : 0);
   blogs.sort((a, b) => last(b) - last(a));
   if (!blogs.length) {
+    submenu.cestovani = null; route();
     $('#posts').innerHTML = '<p class="muted">Blogy se nepodařilo načíst. Zkuste obnovit stránku, nebo je otevřete přímo:</p>'
       + urls.map((u) => `<p><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//, ''))}</a></p>`).join('');
     return;
   }
-  const tabs = $('#tabs');
-  tabs.innerHTML = blogs.map((b, i) => `<button class="tab" role="tab" aria-selected="${i === 0}" data-i="${i}">${esc(b.title)} <small>(${b.posts.length})</small></button>`).join('');
-  tabs.onclick = (e) => {
-    const t = e.target.closest('.tab'); if (!t) return;
-    tabs.querySelectorAll('.tab').forEach((x) => x.setAttribute('aria-selected', x === t));
-    showBlog(blogs[+t.dataset.i]);
-  };
-  showBlog(blogs[0]);
+  selectBlog(0);
 }
 
 // ---------- GitHub ----------
@@ -143,10 +175,9 @@ async function initRepos() {
       <p>${esc(r.description || 'Veřejný projekt na GitHubu')}</p>
       <div class="meta">${r.language ? `<span>● ${esc(r.language)}</span>` : ''}<span>★ ${r.stargazers_count}</span></div>
     </a>`).join('');
+  submenu.programovani = repos.map((r) => ({ label: r.name }));
+  route();
 }
-
-initBlogs();
-initRepos();
 
 // ---------- Menu (jedna sekce najednou, výchozí "O mně") ----------
 const VIEWS = ['o-mne', 'cestovani', 'programovani', 'verim'];
@@ -154,9 +185,12 @@ function route() {
   const id = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'o-mne';
   document.querySelectorAll('.view').forEach((s) => { s.hidden = s.id !== id; });
   document.querySelectorAll('#menu a').forEach((a) => a.classList.toggle('active', a.hash === '#' + id));
+  renderSubmenu(id);
 }
 addEventListener('hashchange', route);
 route();
+initBlogs();
+initRepos();
 
 // ---------- Animované pozadí: neuronová síť ----------
 (() => {

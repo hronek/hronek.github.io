@@ -16,6 +16,8 @@ main{max-width:920px;margin:0 auto;padding:0 16px}
 .hero{padding:88px 0 28px}
 .eyebrow{display:inline-block;margin:0;padding:4px 12px;border:1px solid var(--border);border-radius:999px;background:var(--surface);
   color:var(--accent);font-weight:700;letter-spacing:.08em;text-transform:uppercase;font-size:.85rem}
+.eyebrow{text-decoration:none}
+.eyebrow:hover{border-color:var(--accent)}
 .eyebrow::before{content:'✦ ';color:var(--accent2)}
 h1{font-size:clamp(2.6rem,9vw,5.6rem);line-height:1.05;margin:.3em 0;font-weight:800;letter-spacing:-.03em}
 h1 span{background:linear-gradient(90deg,#a78bfa,#38bdf8,#f472b6,#a78bfa);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shimmer 6s linear infinite}
@@ -27,7 +29,8 @@ section.view{padding:40px 0 56px}
 .view[hidden]{display:none}
 
 /* ----- menu: skleněná lišta, na mobilu spodní tab bar ----- */
-.menu{position:sticky;top:14px;z-index:10;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;
+.navwrap{position:sticky;top:14px;z-index:10}
+.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;
   background:rgba(20,18,48,.7);border:1px solid rgba(167,139,250,.35);border-radius:18px;backdrop-filter:blur(16px) saturate(1.5);
   box-shadow:0 10px 40px rgba(124,58,237,.25),inset 0 1px 0 rgba(255,255,255,.08)}
 .menu a{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 10px;border-radius:13px;text-decoration:none;
@@ -79,9 +82,28 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
   .hero{padding:48px 0 8px}
   .lead{font-size:1.1rem}
   .hero + .menu{margin-top:20px}
-  .menu{top:8px;gap:4px;padding:5px;border-radius:18px}
+  .navwrap{top:8px}
+  .menu{gap:4px;padding:5px;border-radius:18px}
   .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.74rem;font-weight:600}
   .menu svg{width:24px;height:24px}
   .about .btn{width:100%;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+
+/* ----- podmenu ----- */
+.submenu{display:flex;gap:8px;margin-top:8px;padding:6px;overflow-x:auto;scrollbar-width:none;
+  background:rgba(20,18,48,.7);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(16px) saturate(1.5);animation:drop .25s ease-out}
+.submenu[hidden]{display:none}
+.submenu::-webkit-scrollbar{display:none}
+.submenu .muted{padding:6px 10px;font-size:.9rem}
+@keyframes drop{from{opacity:0;transform:translateY(-6px)}}
+.chip{flex:none;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:.9rem;font-weight:600;white-space:nowrap}
+.chip:hover{border-color:var(--accent)}
+.chip small{opacity:.7;margin-left:2px}
+.chip.on{background:var(--grad);border-color:transparent;color:#fff}
+.repo.flash{animation:flash 1.4s ease-out}
+@keyframes flash{0%,40%{box-shadow:0 0 0 3px var(--accent),var(--shadow)}}
+/* karta s hlavním odkazem přes celou plochu a vnořeným odkazem v textu */
+.repo .stretch{text-decoration:none}
+.repo .stretch::after{content:'';position:absolute;inset:0;border-radius:inherit}
+.repo .inner{position:relative;z-index:1}
