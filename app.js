@@ -15,15 +15,6 @@ const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
-// Theme toggle
-const root = document.documentElement;
-try { const t = localStorage.getItem('theme'); if (t) root.dataset.theme = t; } catch {}
-$('#theme').onclick = () => {
-  const dark = root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
-  root.dataset.theme = dark ? 'light' : 'dark';
-  try { localStorage.setItem('theme', root.dataset.theme); } catch {}
-};
-
 // ---------- Blogs ----------
 // Seznam blogů z profilu udržuje GitHub Action (blogs.json, každou hodinu) – profil Bloggeru nelze z prohlížeče číst (CORS).
 async function loadBlogList() {
@@ -161,39 +152,24 @@ function route() {
   const id = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'o-mne';
   document.querySelectorAll('.view').forEach((s) => { s.hidden = s.id !== id; });
   document.querySelectorAll('#menu a').forEach((a) => a.classList.toggle('active', a.hash === '#' + id));
-  document.querySelectorAll('#cta a').forEach((a) => a.classList.toggle('ghost', a.hash !== '#' + id));
 }
 addEventListener('hashchange', route);
 route();
 
-// ---------- Animované pozadí (Matrix déšť / neuronová síť) ----------
-const fx = (() => {
+// ---------- Animované pozadí: neuronová síť ----------
+(() => {
   const c = $('#fx'), ctx = c.getContext('2d');
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let raf = 0, mode = '', w = 0, h = 0, drops = [], nodes = [];
+  let w = 0, h = 0, nodes = [];
   const mouse = { x: -1e4, y: -1e4 };
   addEventListener('pointermove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
-  const glyphs = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ0123456789VĚŘÍMCESTUJIPROGRAMUJI<>{}=+*'.split('');
   function size() {
     const dpr = Math.min(devicePixelRatio || 1, 2);
     w = innerWidth; h = innerHeight; c.width = w * dpr; c.height = h * dpr; ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    drops = Array.from({ length: Math.ceil(w / 16) }, () => Math.random() * h / 16);
     const n = Math.min(110, Math.round(w * h / 14000));
     nodes = Array.from({ length: n }, () => ({ x: Math.random() * w, y: Math.random() * h, vx: (Math.random() - .5) * .35, vy: (Math.random() - .5) * .35 }));
-    if (mode === 'matrix') { ctx.fillStyle = '#000'; ctx.fillRect(0, 0, w, h); }
   }
-  addEventListener('resize', () => mode && size());
-  function matrix() {
-    ctx.fillStyle = 'rgba(0,0,0,.07)'; ctx.fillRect(0, 0, w, h);
-    ctx.font = '15px JetBrains Mono, monospace';
-    drops.forEach((y, i) => {
-      const ch = glyphs[(Math.random() * glyphs.length) | 0];
-      ctx.fillStyle = Math.random() > .975 ? '#d7ffe6' : '#00ff6a';
-      ctx.fillText(ch, i * 16, y * 16);
-      drops[i] = y * 16 > h && Math.random() > .975 ? 0 : y + .55;
-    });
-  }
-  function neural() {
+  function frame() {
     ctx.clearRect(0, 0, w, h);
     for (const p of nodes) {
       p.x += p.vx; p.y += p.vy;
@@ -207,29 +183,9 @@ const fx = (() => {
       if (d < 130) { ctx.strokeStyle = 'rgba(140,120,255,' + (1 - d / 130) * .45 + ')'; ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke(); }
     }
     for (const p of nodes) { ctx.fillStyle = '#7dd3fc'; ctx.beginPath(); ctx.arc(p.x, p.y, 1.8, 0, 7); ctx.fill(); }
+    if (!still) requestAnimationFrame(frame);
   }
-  function loop() { (mode === 'matrix' ? matrix : neural)(); if (!still) raf = requestAnimationFrame(loop); }
-  return {
-    start(d) {
-      cancelAnimationFrame(raf);
-      mode = d === 'matrix' || d === 'neural' ? d : '';
-      if (!mode) { ctx.clearRect(0, 0, c.width, c.height); return; }
-      size();
-      if (still && mode === 'matrix') for (let k = 0; k < 120; k++) matrix();
-      loop();
-    },
-  };
+  addEventListener('resize', size);
+  size();
+  frame();
 })();
-
-// ---------- Přepínač návrhů vzhledu (dočasný, k výběru) ----------
-const DESIGNS = ['aurora', 'editorial', 'terminal', 'matrix', 'neural', 'kinetic'];
-function setDesign(d) {
-  root.dataset.design = d;
-  fx.start(d);
-  document.querySelectorAll('#designs button').forEach((b) => b.classList.toggle('on', b.dataset.d === d));
-  try { localStorage.setItem('design', d); } catch {}
-}
-let initial = new URLSearchParams(location.search).get('d');
-try { initial = initial || localStorage.getItem('design'); } catch {}
-setDesign(DESIGNS.includes(initial) ? initial : 'aurora');
-$('#designs').onclick = (e) => { if (e.target.dataset.d) setDesign(e.target.dataset.d); };
