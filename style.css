@@ -53,3 +53,50 @@ details.post summary time{color:var(--muted);font-size:.85rem}
 .meta{display:flex;gap:12px;font-size:.85rem;color:var(--muted)}
 .about{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:16px;font-size:1.3rem}
 footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px solid var(--border);font-size:.9rem}
+
+/* ----- menu / sekce ----- */
+.view[hidden]{display:none}
+.nav nav a.active{color:var(--text);box-shadow:inset 0 -2px var(--accent)}
+.hero{padding:72px 0 8px}
+
+/* ----- přepínač návrhů ----- */
+.designs{position:fixed;right:12px;bottom:12px;z-index:20;display:flex;gap:6px;align-items:center;flex-wrap:wrap;
+  padding:8px 10px;background:var(--surface);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);font-size:.8rem;color:var(--muted)}
+.designs button{border:1px solid var(--border);background:var(--bg);color:var(--text);border-radius:8px;padding:5px 9px;cursor:pointer;font:inherit}
+.designs button.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ===== Návrh 2: Editorial – teplý papír, patkové písmo ===== */
+[data-design="editorial"]{--bg:#f5efe3;--surface:#fffaf0;--text:#2a2118;--muted:#7a6a58;--border:#d9ccb6;--accent:#a4452c;--accent2:#a4452c;--shadow:none}
+[data-design="editorial"][data-theme="dark"]{--bg:#1c1712;--surface:#262019;--text:#f1e8d8;--muted:#a89885;--border:#3a3126;--accent:#e08a6c;--accent2:#e08a6c}
+[data-design="editorial"] body,[data-design="editorial"]{font-family:Georgia,'Fraunces',serif}
+[data-design="editorial"] h1,[data-design="editorial"] h2,[data-design="editorial"] .brand{font-family:'Fraunces',Georgia,serif;letter-spacing:-.02em}
+[data-design="editorial"] h1{font-weight:800;font-size:clamp(2.6rem,9vw,5.4rem)}
+[data-design="editorial"] h1 span{background:none;color:var(--accent);font-style:italic}
+[data-design="editorial"] .eyebrow{letter-spacing:.25em}
+[data-design="editorial"] .btn,[data-design="editorial"] .tab,[data-design="editorial"] details.post,[data-design="editorial"] .repo{border-radius:2px}
+[data-design="editorial"] .repo,[data-design="editorial"] details.post{border-width:0 0 1px;background:transparent;border-bottom:1px solid var(--border)}
+[data-design="editorial"] .repo:hover{transform:none;background:var(--surface)}
+[data-design="editorial"] .repo b{font-family:'Fraunces',serif;font-size:1.2rem;color:var(--text)}
+[data-design="editorial"] .repos{grid-template-columns:1fr}
+[data-design="editorial"] .nav{background:var(--bg)}
+
+/* ===== Návrh 3: Terminál – tmavý, monospace, neon ===== */
+[data-design="terminal"]{--bg:#05080d;--surface:#0b1220;--text:#d5e4f3;--muted:#7189a3;--border:#16263a;--accent:#2dff9a;--accent2:#00c2ff;--shadow:0 0 24px rgba(45,255,154,.06)}
+[data-design="terminal"] body,[data-design="terminal"]{font-family:'JetBrains Mono',ui-monospace,monospace;font-size:15px}
+[data-design="terminal"] body{background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;background-attachment:fixed}
+[data-design="terminal"] h1{font-weight:800;letter-spacing:-.04em}
+[data-design="terminal"] h2::before{content:'$ ';color:var(--accent)}
+[data-design="terminal"] .eyebrow::before{content:'> '}
+[data-design="terminal"] .btn,[data-design="terminal"] .tab,[data-design="terminal"] details.post,[data-design="terminal"] .repo{border-radius:4px}
+[data-design="terminal"] .btn{color:#021a0e}
+[data-design="terminal"] .tab[aria-selected="true"]{color:#021a0e}
+[data-design="terminal"] .repo:hover{border-color:var(--accent);transform:none;box-shadow:0 0 18px rgba(45,255,154,.2)}
+[data-design="terminal"] .nav{background:color-mix(in srgb,var(--bg) 85%,transparent)}
+[data-design="terminal"] .designs button.on{color:#021a0e}
+
+/* ----- obrázky v příspěvcích ----- */
+.body img{display:block;margin:12px auto;max-height:80vh;object-fit:contain;cursor:zoom-in}
+.body .separator,.body .tr-caption-container{text-align:center}
+.lightbox{border:0;padding:0;background:transparent;max-width:96vw;max-height:96vh}
+.lightbox::backdrop{background:rgba(0,0,0,.85)}
+.lightbox img{max-width:96vw;max-height:96vh;display:block;cursor:zoom-out}

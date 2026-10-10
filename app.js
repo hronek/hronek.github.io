@@ -66,15 +66,40 @@ async function loadFeed(url) {
 function sanitize(html) {
   const doc = new DOMParser().parseFromString(html, 'text/html');
   doc.querySelectorAll('script,style,object,embed,link,meta').forEach((n) => n.remove());
+  // Obrázky: odbalit z odkazů na velký soubor (aby se neodskakovalo), zvětšit z náhledu, zobrazit inline
+  doc.querySelectorAll('a').forEach((a) => {
+    const img = a.querySelector('img');
+    if (img && a.textContent.trim() === '') a.replaceWith(img);
+  });
   doc.querySelectorAll('*').forEach((n) => {
     [...n.attributes].forEach((a) => {
       if (/^on/i.test(a.name) || /^\s*javascript:/i.test(a.value)) n.removeAttribute(a.name);
     });
-    if (n.tagName === 'IMG') n.loading = 'lazy';
+    if (n.tagName === 'IMG') {
+      const big = (n.getAttribute('src') || '').replace(/\/(s\d+|w\d+-h\d+)(-[a-z]+)*\//, '/s1600/');
+      ['width', 'height', 'style', 'srcset'].forEach((k) => n.removeAttribute(k));
+      n.src = big;
+      n.dataset.full = big;
+      n.loading = 'lazy';
+      n.referrerPolicy = 'no-referrer';
+    }
     if (n.tagName === 'A') { n.target = '_blank'; n.rel = 'noopener'; }
   });
   return doc.body.innerHTML;
 }
+
+// Lightbox: klik na obrázek ho zvětší přímo na stránce
+const lb = document.createElement('dialog');
+lb.className = 'lightbox';
+lb.innerHTML = '<img alt="">';
+document.body.appendChild(lb);
+lb.onclick = () => lb.close();
+document.addEventListener('click', (e) => {
+  const img = e.target.closest('.body img');
+  if (!img) return;
+  lb.firstChild.src = img.dataset.full || img.src;
+  lb.showModal();
+});
 
 const fmt = new Intl.DateTimeFormat('cs-CZ', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -119,3 +144,25 @@ async function initRepos() {
 
 initBlogs();
 initRepos();
+
+// ---------- Menu (jedna sekce najednou, výchozí "O mně") ----------
+const VIEWS = ['o-mne', 'cestovani', 'programovani', 'verim'];
+function route() {
+  const id = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'o-mne';
+  document.querySelectorAll('.view').forEach((s) => { s.hidden = s.id !== id; });
+  document.querySelectorAll('#menu a').forEach((a) => a.classList.toggle('active', a.hash === '#' + id));
+  document.querySelectorAll('#cta a').forEach((a) => a.classList.toggle('ghost', a.hash !== '#' + id));
+}
+addEventListener('hashchange', route);
+route();
+
+// ---------- Přepínač návrhů vzhledu (dočasný, k výběru) ----------
+function setDesign(d) {
+  root.dataset.design = d;
+  document.querySelectorAll('#designs button').forEach((b) => b.classList.toggle('on', b.dataset.d === d));
+  try { localStorage.setItem('design', d); } catch {}
+}
+let initial = new URLSearchParams(location.search).get('d');
+try { initial = initial || localStorage.getItem('design'); } catch {}
+setDesign(['aurora', 'editorial', 'terminal'].includes(initial) ? initial : 'aurora');
+$('#designs').onclick = (e) => { if (e.target.dataset.d) setDesign(e.target.dataset.d); };
