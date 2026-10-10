@@ -82,7 +82,9 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
   .hero{padding:48px 0 8px}
   .lead{font-size:1.1rem}
   .hero + .menu{margin-top:20px}
-  .navwrap{top:8px}
+  /* na mobilu se lepí jen hlavní menu, podmenu zůstává v toku stránky a nezakrývá obsah */
+  .navwrap{display:contents}
+  .menu{position:sticky;top:8px;z-index:10}
   .menu{gap:4px;padding:5px;border-radius:18px}
   .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.74rem;font-weight:600}
   .menu svg{width:24px;height:24px}
@@ -91,10 +93,9 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 
 /* ----- podmenu ----- */
-.submenu{display:flex;gap:8px;margin-top:8px;padding:6px;overflow-x:auto;scrollbar-width:none;
+.submenu{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;padding:6px;
   background:rgba(20,18,48,.7);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(16px) saturate(1.5);animation:drop .25s ease-out}
 .submenu[hidden]{display:none}
-.submenu::-webkit-scrollbar{display:none}
 .submenu .muted{padding:6px 10px;font-size:.9rem}
 @keyframes drop{from{opacity:0;transform:translateY(-6px)}}
 .chip{flex:none;border:1px solid var(--border);background:var(--surface);color:var(--text);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:.9rem;font-weight:600;white-space:nowrap}
@@ -107,3 +108,22 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
 .repo .stretch{text-decoration:none}
 .repo .stretch::after{content:'';position:absolute;inset:0;border-radius:inherit}
 .repo .inner{position:relative;z-index:1}
+
+@media (max-width:640px){
+  /* podmenu na mobilu jako mřížka 2 sloupců – vše vidět bez posouvání */
+  .submenu{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+  .submenu[hidden]{display:none}
+  .chip{white-space:normal;text-align:left;padding:10px 12px;border-radius:12px;font-size:.88rem;line-height:1.3}
+}
+
+/* ----- karty s obrázkem (Věřím) ----- */
+.repos.media .repo{padding:0;overflow:hidden}
+.repos.media .repo > b,.repos.media .repo > .stretch,.repos.media .repo > p{margin:0 20px}
+.repos.media .repo > p{margin-bottom:20px}
+.thumb{display:block;aspect-ratio:16/9;overflow:hidden;margin-bottom:6px;border-bottom:1px solid var(--border)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}
+.thumb.top img{object-position:50% 20%}
+.thumb.logo{background:#fff}
+.thumb.logo img{object-fit:contain;padding:12px}
+.thumb.wide img{padding:18% 22%}
+.repo:hover .thumb img{transform:scale(1.05)}
