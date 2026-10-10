@@ -25,24 +25,22 @@ async function loadBlogList() {
   return FALLBACK_BLOGS;
 }
 
-function jsonp(url) {
+// Blogger neposílá CORS hlavičky, proto rovnou JSONP (alt=json-in-script)
+function jsonp(url, timeout = 15000) {
   return new Promise((resolve, reject) => {
     const cb = 'bcb' + Math.random().toString(36).slice(2);
     const s = document.createElement('script');
-    window[cb] = (d) => { delete window[cb]; s.remove(); resolve(d); };
-    s.onerror = () => { delete window[cb]; s.remove(); reject(new Error('jsonp')); };
+    const done = () => { clearTimeout(t); delete window[cb]; s.remove(); };
+    const t = setTimeout(() => { done(); reject(new Error('timeout')); }, timeout);
+    window[cb] = (d) => { done(); resolve(d); };
+    s.onerror = () => { done(); reject(new Error('jsonp')); };
     s.src = `${url}/feeds/posts/default?alt=json-in-script&max-results=500&callback=${cb}`;
     document.head.appendChild(s);
   });
 }
 
 async function loadFeed(url) {
-  let data;
-  try {
-    const r = await fetch(`${url}/feeds/posts/default?alt=json&max-results=500`);
-    data = await r.json();
-  } catch { data = await jsonp(url); }
-  const feed = data.feed;
+  const feed = (await jsonp(url)).feed;
   const own = (feed.author || []).some((a) => (a.uri?.$t || '').includes(PROFILE_ID));
   if (!own) return null;
   const posts = (feed.entry || []).map((e) => ({
@@ -116,7 +114,11 @@ async function initBlogs() {
   // nejnovější blog (podle data posledního příspěvku) první a výchozí
   const last = (b) => (b.posts.length ? b.posts[b.posts.length - 1].date : 0);
   blogs.sort((a, b) => last(b) - last(a));
-  if (!blogs.length) { $('#posts').innerHTML = '<p class="muted">Blogy se nepodařilo načíst.</p>'; return; }
+  if (!blogs.length) {
+    $('#posts').innerHTML = '<p class="muted">Blogy se nepodařilo načíst. Zkuste obnovit stránku, nebo je otevřete přímo:</p>'
+      + urls.map((u) => `<p><a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//, ''))}</a></p>`).join('');
+    return;
+  }
   const tabs = $('#tabs');
   tabs.innerHTML = blogs.map((b, i) => `<button class="tab" role="tab" aria-selected="${i === 0}" data-i="${i}">${esc(b.title)} <small>(${b.posts.length})</small></button>`).join('');
   tabs.onclick = (e) => {

@@ -4,7 +4,7 @@
   --shadow:0 20px 60px rgba(0,0,0,.45);color-scheme:dark;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:96px;overflow-x:clip}
+html{scroll-behavior:smooth;scroll-padding-top:110px;overflow-x:clip}
 body{margin:0;color:var(--text);font:16px/1.65 Inter,system-ui,sans-serif;overflow-x:clip;
   background:radial-gradient(60vw 50vh at 85% -10%,rgba(124,58,237,.35),transparent 60%),radial-gradient(50vw 40vh at -10% 30%,rgba(14,165,233,.25),transparent 60%),var(--bg);background-attachment:fixed}
 a{color:var(--accent)}
@@ -44,7 +44,7 @@ section.view{padding:40px 0 56px}
 .tab[aria-selected="true"]{background:var(--grad);border-color:transparent;color:#fff}
 .toolbar{display:flex;gap:8px}
 .posts{display:flex;flex-direction:column;gap:12px}
-details.post,.repo,.li-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(1.4)}
+details.post,.repo{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(1.4)}
 details.post summary{cursor:pointer;padding:16px 20px;display:flex;flex-direction:column;gap:2px;list-style:none}
 details.post summary::-webkit-details-marker{display:none}
 details.post summary b{font-size:1.05rem}
@@ -65,12 +65,7 @@ details.post summary time{color:var(--muted);font-size:.85rem}
 .meta{display:flex;gap:12px;font-size:.85rem;color:var(--muted)}
 
 /* ----- O mně / LinkedIn ----- */
-.about{display:flex;flex-direction:column;gap:16px;margin-top:20px;align-items:flex-start}
-.li-card{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:20px;text-decoration:none;color:var(--text);width:100%;max-width:560px}
-.li-card strong{display:block;font-size:1.3rem}
-.li-card small{color:var(--muted)}
-.li-card .btn{margin-left:auto}
-.li-logo{display:grid;place-items:center;width:52px;height:52px;border-radius:12px;background:#0a66c2;color:#fff;font:800 1.6rem/1 Inter,sans-serif}
+.about{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:16px;font-size:1.3rem}
 
 /* ----- lightbox ----- */
 .lightbox{border:0;padding:0;background:transparent;max-width:96vw;max-height:96vh}
@@ -83,11 +78,10 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
 @media (max-width:640px){
   .hero{padding:48px 0 8px}
   .lead{font-size:1.1rem}
-  html{scroll-padding-top:16px}
-  .menu{position:fixed;top:auto;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom));gap:4px;padding:5px;border-radius:20px}
-  .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.72rem;font-weight:600}
+  .hero + .menu{margin-top:20px}
+  .menu{top:8px;gap:4px;padding:5px;border-radius:18px}
+  .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.74rem;font-weight:600}
   .menu svg{width:24px;height:24px}
-  body{padding-bottom:96px}
-  .li-card .btn{margin-left:0;width:100%;text-align:center}
+  .about .btn{width:100%;text-align:center}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
