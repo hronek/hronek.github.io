@@ -30,13 +30,14 @@ section.view{padding:40px 0 56px}
 
 /* ----- menu: skleněná lišta, na mobilu spodní tab bar ----- */
 .navwrap{position:sticky;top:14px;z-index:10}
-.menu{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:6px;
+.menu{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:6px;
   background:rgba(20,18,48,.7);border:1px solid rgba(167,139,250,.35);border-radius:18px;backdrop-filter:blur(16px) saturate(1.5);
   box-shadow:0 10px 40px rgba(124,58,237,.25),inset 0 1px 0 rgba(255,255,255,.08)}
 .menu a{display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 10px;border-radius:13px;text-decoration:none;
   color:var(--text);font-weight:700;font-size:1.02rem;transition:background .2s,transform .15s}
 .menu a:hover{background:var(--surface2)}
 .menu a:active{transform:scale(.97)}
+.menu span{white-space:nowrap}
 .menu svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none}
 .menu a.active{background:var(--grad);color:#fff;box-shadow:0 8px 24px rgba(124,58,237,.5)}
 
@@ -47,11 +48,14 @@ section.view{padding:40px 0 56px}
 .tab[aria-selected="true"]{background:var(--grad);border-color:transparent;color:#fff}
 .toolbar{display:flex;gap:8px}
 .posts{display:flex;flex-direction:column;gap:12px}
-details.post,.repo{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(1.4)}
+details.post,article.post,.repo{background:var(--surface);border:1px solid var(--border);border-radius:20px;box-shadow:var(--shadow);backdrop-filter:blur(14px) saturate(1.4)}
 details.post summary{cursor:pointer;padding:16px 20px;display:flex;flex-direction:column;gap:2px;list-style:none}
 details.post summary::-webkit-details-marker{display:none}
-details.post summary b{font-size:1.05rem}
-details.post summary time{color:var(--muted);font-size:.85rem}
+article.post header{padding:16px 20px 4px;display:flex;flex-direction:column;gap:2px}
+.post summary b,.post header b{font-size:1.05rem}
+.post summary time,.post header time{color:var(--muted);font-size:.85rem}
+article.post .body > :first-child{margin-top:0}
+.body video{display:block;max-width:100%;margin:12px auto;border-radius:16px}
 .body{padding:0 20px 20px;overflow-wrap:anywhere}
 .body img{display:block;max-width:100%;height:auto;margin:12px auto;max-height:80vh;object-fit:contain;border-radius:16px;cursor:zoom-in}
 .body iframe{max-width:100%}
@@ -76,6 +80,9 @@ details.post summary time{color:var(--muted);font-size:.85rem}
 .lightbox img{max-width:96vw;max-height:96vh;display:block;cursor:zoom-out}
 
 footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px solid var(--border);font-size:.9rem}
+.visits{white-space:nowrap}
+.visits svg{width:1.1em;height:1.1em;vertical-align:-.2em;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.visits b{font-weight:600}
 
 /* ----- mobil: menu jako spodní lišta s ikonami ----- */
 @media (max-width:640px){
@@ -86,9 +93,10 @@ footer{text-align:center;color:var(--muted);padding:32px 16px;border-top:1px sol
   .navwrap{display:contents}
   .menu{position:sticky;top:8px;z-index:10}
   .menu{gap:4px;padding:5px;border-radius:18px}
-  .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.74rem;font-weight:600}
+  .menu a{flex-direction:column;gap:3px;padding:9px 2px;font-size:.7rem;font-weight:600}
   .menu svg{width:24px;height:24px}
 }
+@media (max-width:360px){.menu a{font-size:.62rem;letter-spacing:-.01em}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
 
 /* ----- podmenu ----- */

@@ -10,7 +10,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=10">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <canvas id="fx" aria-hidden="true"></canvas>
@@ -25,6 +25,7 @@
   <div class="navwrap">
   <nav id="menu" class="menu" aria-label="Hlavní menu">
     <a href="#o-mne"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg><span>O mně</span></a>
+    <a href="#aktuality"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg><span>Aktuality</span></a>
     <a href="#cestovani"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.8 3 2.8 15 0 18M12 3c-2.8 3-2.8 15 0 18"/></svg><span>Cestování</span></a>
     <a href="#programovani"><svg viewBox="0 0 24 24"><path d="M8 7l-5 5 5 5M16 7l5 5-5 5M14 4l-4 16"/></svg><span>Programování</span></a>
     <a href="#verim"><svg viewBox="0 0 24 24"><path d="M12 3v18M6 8h12"/></svg><span>Věřím</span></a>
@@ -41,6 +42,12 @@
         <a class="btn" href="https://www.linkedin.com/in/jirihronek/" target="_blank" rel="noopener">LinkedIn →</a>
       </div>
     </div>
+  </section>
+
+  <section id="aktuality" class="view">
+    <h2>Aktuality</h2>
+    <p class="sub">Krátké zprávy o tom, co je u mě nového.</p>
+    <div id="news" class="posts"><p class="muted">Načítám…</p></div>
   </section>
 
   <section id="cestovani" class="view">
@@ -77,6 +84,6 @@
   </section>
 </main>
 
-<footer>© <span id="year"></span> Jiří Hronek</footer>
-<script src="app.js?v=10"></script></body>
+<footer>© <span id="year"></span> Jiří Hronek<span id="visits" class="visits" title="Počet návštěv webu" hidden> · <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> <b></b></span></footer>
+<script src="app.js?v=11"></script></body>
 </html>

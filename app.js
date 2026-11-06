@@ -179,8 +179,55 @@ async function initRepos() {
   route();
 }
 
+// ---------- Aktuality ----------
+// Každá otevřená issue, kterou v repozitáři webu založím já, je jedna aktualita (nejnovější nahoře).
+// Psát jde z mobilu (aplikace GitHub nebo github.com/hronek/hronek.github.io/issues/new), skrýt = zavřít issue.
+const NEWS_REPO = `${GH_USER}/${GH_USER}.github.io`;
+
+// GitHub vrací obrázky s podpisem platným 5 minut – přepsat na trvalou adresu přílohy
+const ghAssets = (html) => html.replace(
+  /https:\/\/private-user-images\.githubusercontent\.com\/\d+\/\d+-([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\.\w+\?jwt=[^"'\s]*/g,
+  'https://github.com/user-attachments/assets/$1',
+);
+
+async function initNews() {
+  try {
+    const r = await fetch(`https://api.github.com/repos/${NEWS_REPO}/issues?creator=${GH_USER}&state=open&per_page=100`,
+      { headers: { Accept: 'application/vnd.github.html+json' } });
+    if (!r.ok) throw 0;
+    const items = (await r.json()).filter((i) => !i.pull_request);
+    $('#news').innerHTML = items.length ? items.map((i) => `
+      <article class="post">
+        <header><b>${esc(i.title)}</b><time datetime="${esc(i.created_at)}">${fmt.format(new Date(i.created_at))}</time></header>
+        ${i.body_html ? `<div class="body">${sanitize(ghAssets(i.body_html))}</div>` : ''}
+      </article>`).join('') : '<p class="muted">Zatím žádné aktuality.</p>';
+  } catch {
+    $('#news').innerHTML = `<p class="muted">Aktuality se nepodařilo načíst. Zkuste obnovit stránku, nebo je otevřete
+      <a href="https://github.com/${NEWS_REPO}/issues?q=is%3Aissue+is%3Aopen+author%3A${GH_USER}" target="_blank" rel="noopener">přímo na GitHubu</a>.</p>`;
+  }
+}
+
+// ---------- Počítadlo návštěv (Abacus – zdarma, bez registrace a bez cookies) ----------
+// Návštěva = první načtení po 30 minutách nečinnosti; mimo ostrý web se jen čte, nepočítá.
+async function initVisits() {
+  let fresh = location.hostname === `${GH_USER}.github.io`;
+  try {
+    const now = Date.now();
+    if (now - (+localStorage.getItem('visitTs') || 0) < 30 * 60e3) fresh = false;
+    localStorage.setItem('visitTs', now);
+  } catch {}
+  try {
+    const r = await fetch(`https://abacus.jasoncameron.dev/${fresh ? 'hit' : 'get'}/${GH_USER}.github.io/visits`);
+    if (!r.ok) return;
+    const { value } = await r.json();
+    if (!Number.isFinite(value)) return;
+    $('#visits b').textContent = new Intl.NumberFormat('cs-CZ').format(value);
+    $('#visits').hidden = false;
+  } catch {}
+}
+
 // ---------- Menu (jedna sekce najednou, výchozí "O mně") ----------
-const VIEWS = ['o-mne', 'cestovani', 'programovani', 'verim'];
+const VIEWS = ['o-mne', 'aktuality', 'cestovani', 'programovani', 'verim'];
 function route() {
   const id = VIEWS.includes(location.hash.slice(1)) ? location.hash.slice(1) : 'o-mne';
   document.querySelectorAll('.view').forEach((s) => { s.hidden = s.id !== id; });
@@ -189,8 +236,10 @@ function route() {
 }
 addEventListener('hashchange', route);
 route();
+initNews();
 initBlogs();
 initRepos();
+initVisits();
 
 // ---------- Animované pozadí: neuronová síť ----------
 (() => {
